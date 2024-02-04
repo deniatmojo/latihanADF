@@ -1,17 +1,4 @@
-!=======================================================================
-! Program     : Analisis Ducted Fan
-! Nama		  : Deni Atmojo
-! NIM		  : 13619041
-! Deskripsi   : Program ini merupakan program sederhana yang digunakan
-!               untuk menghitung pengaruh dari distribusi sudut serang
-!               pada airfoil di ductedfan
-! Pembuat     : Deni Atmojo
-! Versi       : 1.0
-! Tanggal     : [4 Februari 2024]
-! Ini adalah file MASTER
-!=======================================================================
-program ADF
-	! Disini perlu deskripsi variable yang digunakan
+program BladeForces
     implicit none
     integer :: i, j, k
     integer, parameter :: num_blades = 12
@@ -21,23 +8,9 @@ program ADF
     real :: alpha_data(13), CL_data(13), CD_data(13)
     real :: alpha_variation(num_elements * num_blades)
     real :: r, dr, chord_length, alpha_interp, CL, CD, phi
-    real :: dA, dL, dD, dT, T, hehe
-   
-    ! Header Program Exe
-    print *, '======================================================================='
-    print *, 'Program     = ADF - Analisis Ducted Fan'
-    print *, 'Deskripsi   = Program ini untuk menganalisis pengaruh distribusi sudut serang'
-    print *, '              pada airfoil ducted fan'
-    print *, 'Pembuat     = Deni Atmojo'
-    Print *, 'NIM         = 13619041'
-    Print *, 'Version     = 1.0'
-    Print *, 'Tanggal     = [3 Februari 2024]'
-    Print *, 'Pembaharuan = Belum ada pembaharuan'
-    print *, '======================================================================='
-    print *, ''
-    print *, ''
-    print *, ''
-    
+    real :: dA, dL, dD, dT, T
+    character(len=100) :: output_filename
+
     ! Parameter NACA 4412
     V = 100.0              ! Kecepatan aliran udara (m/s)
     rho = 1.225            ! Kerapatan udara (kg/m^3)
@@ -53,20 +26,22 @@ program ADF
     alpha_data = [0.0, 2.0, 3.7, 5.5, 8.0, 10.0, 11.0, 12.0, 12.8, 13.5, 14.8, 15.2, 16.8]
     CL_data = [0.29, 0.425, 0.56, 0.6725, 0.82, 0.955, 1.04, 1.105, 1.15, 1.175, 1.275, 1.3, 1.35]
     CD_data = [0.21, 0.21, 0.22, 0.24, 0.245, 0.275, 0.28, 0.295, 0.31, 0.3225, 0.3225, 0.325, 0.3425]
-    
+
     ! Variasi sudut serang untuk setiap sudu dan elemen
     do i = 1, num_elements
         do j = 1, num_blades
-            alpha_variation((i - 1) * num_blades + j) = 6.0 + real(i - 1) * 0.4 ! Variasi sudut serang dari 6 hingga 10
+            alpha_variation((j - 1) * num_elements + i) = 6.0 + real(i - 1) * 0.4
         end do
     end do
-
-     ! Tulis hasil ke dalam file
-    open(unit=10, file='hasil.txt', status='replace', action='write')
+    
+    print *, alpha_variation
 
     ! Inisialisasi total gaya angkat
     T = 0.0
-    
+
+    ! Tulis hasil ke dalam file
+    open(unit=10, file='hasil.txt', status='replace', action='write')
+
     ! Loop untuk setiap bilah
     do i = 1, num_blades
         ! Loop untuk setiap elemen sudu
@@ -103,22 +78,15 @@ program ADF
             ! Akumulasikan gaya angkat dan gaya drag dari elemen sudu
             T = T + dT
             
-            print *, 'Blade ', i, ', Element ', j, ', Total Thrust: ', T, ', dT: ', dT
+            !print *, alpha_interp
             
-            ! Tulis nilai T dan dT ke dalam file
-            write(10, '(A, F20.10, F20.10)') 'Blade ', i, ', Element ', j, ', Total Thrust: ', T, ', dT: ', dT
+
         end do
     end do
-    close(unit=10)
 
-    ! Output hasil
-    hehe = acos(-1.0)
-    print *, 'Total Thrust:', T, 'N'
-    print *, 'Nilai phi adalah:', hehe
-    
+    close(unit=10)
     ! Tunggu masukan sebelum program selesai
     print *, 'Tekan Enter untuk menutup...'
     read(*,*)
-
-end program ADF
-
+    
+end program BladeForces
