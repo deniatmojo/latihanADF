@@ -13,7 +13,7 @@ program interpolasi_data
     read *, x_interp
 
     ! Melakukan interpolasi linier
-    call interpolate_linearCL(alpha_data, CL_data, CD_data, n, x_interp, CL_interp, CD_interp)
+    call interpolate_linearCLCD(alpha_data, CL_data, CD_data, n, x_interp, CL_interp, CD_interp)
     !call interpolate_linear(alpha_data, CD_data, n, x_interp, CL_interp)
 
     ! Menampilkan hasil interpolasi
@@ -23,7 +23,7 @@ program interpolasi_data
 
 end program interpolasi_data
 
-subroutine interpolate_linearCL(alpha_data, CL_data, CD_data, n, x_interp, CL_interp, CD_interp)
+subroutine interpolate_linearCLCD(alpha_data, CL_data, CD_data, n, x_interp, CL_interp, CD_interp)
     implicit none
     real, intent(in) :: alpha_data(n), CL_data(n), CD_data(n), x_interp
     integer, intent(in) :: n
@@ -43,6 +43,6 @@ subroutine interpolate_linearCL(alpha_data, CL_data, CD_data, n, x_interp, CL_in
     print *, "Peringatan: Titik x yang ingin diinterpolasi berada di luar jangkauan data."
     CL_interp = 0.0
     
-end subroutine interpolate_linearCL
+end subroutine interpolate_linearCLCD
 
 
